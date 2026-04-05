@@ -1,3 +1,5 @@
+import { DialRoot } from "dialkit";
+import "dialkit/styles.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -30,6 +32,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {children}
+        {process.env.NODE_ENV === "development" && (
+          <DialRoot position="top-right" defaultOpen={false} />
+        )}
         {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>

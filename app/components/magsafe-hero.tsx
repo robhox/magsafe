@@ -194,11 +194,11 @@ const HIDDEN_TAIL_GUIDE = 14;
 const POSITION_SPRING = {
   dock: {
     reduced: { stiffness: 360, damping: 38 },
-    default: { stiffness: 520, damping: 28 },
+    default: { stiffness: 1000, damping: 50 },
   },
   return: {
     reduced: { stiffness: 280, damping: 34 },
-    default: { stiffness: 360, damping: 30 },
+    default: { stiffness: 80, damping: 18 },
   },
 } as const;
 
