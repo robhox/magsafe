@@ -2,23 +2,23 @@
 
 :root {
   --background: #f4f1ea;
-    --foreground: #161412;
-    --surface: rgba(255, 255, 255, 0.74);
-    --surface-line: rgba(132, 122, 106, 0.14);
-    --device: #d1d2d4;
-    --device-edge: #c1c4c8;
-    --device-shadow: rgba(121, 127, 138, 0.18);
-    --metal-light: #dedede;
-    --metal-mid: #b9b9b9;
-    --metal-dark: #8e8e8e;
-    --metal-edge: #f3f2f0;
-    --tail-light: #fefdfb;
-    --tail-mid: #e8e3da;
-    --tail-shadow: rgba(118, 107, 89, 0.12);
-    --cable-shadow: rgba(119, 112, 101, 0.16);
-    --cable-line: rgba(194, 198, 205, 0.34);
-    --pin: #b38a3a;
-    --accent: #81f743;
+  --foreground: #161412;
+  --surface: rgba(255, 255, 255, 0.74);
+  --surface-line: rgba(132, 122, 106, 0.14);
+  --device: #d1d2d4;
+  --device-edge: #c1c4c8;
+  --device-shadow: rgba(121, 127, 138, 0.18);
+  --metal-light: #dedede;
+  --metal-mid: #b9b9b9;
+  --metal-dark: #8e8e8e;
+  --metal-edge: #f3f2f0;
+  --tail-light: #fefdfb;
+  --tail-mid: #e8e3da;
+  --tail-shadow: rgba(118, 107, 89, 0.12);
+  --cable-shadow: rgba(119, 112, 101, 0.16);
+  --cable-line: rgba(194, 198, 205, 0.34);
+  --pin: #b38a3a;
+  --accent: #81f743;
 }
 
 @theme inline {
@@ -35,361 +35,359 @@ body {
 
 body {
   background:
-      radial-gradient(circle at top left, rgba(255, 255, 255, 0.88), transparent 36%),
-      radial-gradient(circle at 82% 28%, rgba(229, 232, 239, 0.74), transparent 28%),
-      linear-gradient(180deg, #fbfaf8 0%, var(--background) 58%, #ece8df 100%);
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.88), transparent 36%),
+    radial-gradient(circle at 82% 28%, rgba(229, 232, 239, 0.74), transparent 28%),
+    linear-gradient(180deg, #fbfaf8 0%, var(--background) 58%, #ece8df 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  }
-  
-  .magsafe-page {
-    flex: 1;
-    min-height: 100vh;
-  }
-  
-  .magsafe-hero {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.18)),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(247, 243, 236, 0.24));
-    isolation: isolate;
-  }
-  
-  .magsafe-hero__ambient {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(48px);
-    pointer-events: none;
-    opacity: 0.7;
-  }
-  
-  .magsafe-hero__ambient--left {
-    left: -12rem;
-    top: -8rem;
-    height: 20rem;
-    width: 24rem;
-    background: rgba(255, 255, 255, 0.9);
-  }
-  
-  .magsafe-hero__ambient--right {
-    right: 8rem;
-    top: 8rem;
-    height: 16rem;
-    width: 16rem;
-    background: rgba(216, 221, 232, 0.48);
-  }
-  
-  .magsafe-hero__copy {
-    pointer-events: none;
-    position: absolute;
-    left: clamp(1.25rem, 3vw, 3rem);
-    top: clamp(1.25rem, 3vw, 2.75rem);
-    z-index: 3;
-    max-width: 24rem;
-  }
-  
-  .magsafe-hero__eyebrow {
-    margin: 0 0 0.4rem;
-    color: rgba(26, 23, 18, 0.5);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-  }
-  
-  .magsafe-hero__headline {
-    margin: 0;
-    max-width: 17rem;
-    color: rgba(22, 20, 18, 0.82);
-    font-size: clamp(0.95rem, 1.1vw, 1.1rem);
-    letter-spacing: -0.03em;
-  }
-  
-  .magsafe-cable-layer {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  
-  .magsafe-cable-layer canvas {
-    position: absolute;
-    inset: 0;
-    display: block;
-    height: 100%;
-    width: 100%;
-  }
-  
-  .magsafe-device {
-    position: absolute;
-    right: -12vw;
-    top: 19vh;
-    bottom: -7vh;
-    width: min(52vw, 46rem);
-    min-width: 22rem;
-    border-top-left-radius: clamp(2.5rem, 4vw, 4rem);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 20%),
-      linear-gradient(180deg, var(--device) 0%, #cfd0d3 100%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.5),
-      -24px 0 60px var(--device-shadow);
-    z-index: 2;
-  }
-  
-  .magsafe-device__sheen {
-    position: absolute;
-    inset: 0;
-    border-top-left-radius: inherit;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 16%),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 14%);
-    pointer-events: none;
-  }
-  
-  .magsafe-port-guide {
-    position: absolute;
-    left: 0;
-    transform: translateY(-20%);
-    height: 2.8rem;
-    width: 4.9rem;
-    pointer-events: none;
-  }
-  
-  .magsafe-port-guide__edge,
-  .magsafe-port-guide__arrow {
-    position: absolute;
-    display: block;
-  }
-  
-  .magsafe-port-guide__edge {
-    left: 0;
-    top: 50%;
-    height: 80px;
-      width: 3px;
-      border-radius: 4px 0px 0px 4px;
-      transform: translate(-100%, -50%);
-      background: rgba(114, 122, 135, 0.82);
-      opacity: 1;
-  }
-  
-  .magsafe-port-guide__arrow {
-    left: -3.35rem;
-    top: 50%;
-    height: 1rem;
-    width: 2.5rem;
-    transform: translateY(-50%);
-    animation: magsafe-port-arrow 1.35s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  }
-  
-  .magsafe-port-guide__arrow::before,
-  .magsafe-port-guide__arrow::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    display: block;
-  }
-  
-  .magsafe-port-guide__arrow::before {
-    left: 0;
-    height: 0.14rem;
-    width: 1.72rem;
-    border-radius: 999px;
-    transform: translateY(-50%);
-    background: linear-gradient(90deg, rgba(144, 154, 169, 0), rgba(124, 134, 149, 0.88));
-    box-shadow: 0 0 0.9rem rgba(133, 144, 160, 0.18);
-  }
-  
-  .magsafe-port-guide__arrow::after {
-    right: 0.08rem;
-    height: 0.62rem;
-    width: 0.62rem;
-    border-top: 0.14rem solid rgba(110, 120, 136, 0.92);
-    border-right: 0.14rem solid rgba(110, 120, 136, 0.92);
-    transform: translateY(-50%) rotate(45deg);
-  }
-  
-  .magsafe-connector-anchor {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 4;
-    touch-action: none;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  
-  .magsafe-connector {
-    position: relative;
-    height: 96px;
-    width: 68px;
-    will-change: transform;
-    filter: drop-shadow(0 14px 18px rgba(93, 88, 80, 0.12));
-  }
-  
-  .magsafe-connector__head,
-  .magsafe-connector__shell,
-  .magsafe-connector__led {
-    position: absolute;
-    display: block;
-  }
-  
-  .magsafe-connector__head {
-    left: 0;
-    top: 0;
-    height: 96px;
-    width: 64px;
-  }
-  
-  .magsafe-connector__shell {
-    inset: 0;
-    border-radius: 2px;
-    background:
-      linear-gradient(0deg, var(--metal-edge) 0%, var(--metal-light) 22%, var(--metal-mid) 68%, var(--metal-dark) 100%);
-  }
-  
-  .magsafe-connector__shell::after {
-    content: "";
-    position: absolute;
-    right: -4px;
-    top: 5px;
-    bottom: 5px;
-    width: 4px;
-    border-radius: 0 1px 1px 0;
-    background: linear-gradient(180deg, rgba(173, 173, 173, 0.88), rgba(120, 120, 120, 0.96));
-  }
-  
-  .magsafe-connector__led {
-    left: 29px;
-    top: 45px;
-    height: 6px;
-    width: 6px;
-    border-radius: 999px;
-    background: var(--accent);
-    box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.34),
-      0 0 10px rgba(129, 247, 67, 0.45);
-    transition:
-      opacity 180ms ease,
-      box-shadow 220ms ease;
-  }
-  
-  .magsafe-connector[data-state="docked"] .magsafe-connector__led,
-  .magsafe-connector[data-state="snapping"] .magsafe-connector__led {
-    box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.36),
-      0 0 15px rgba(129, 247, 67, 0.62);
-  }
-  
-  .magsafe-hero__hud {
-    pointer-events: none;
-    position: absolute;
-    bottom: clamp(1.25rem, 3vw, 2.5rem);
-    left: clamp(1.25rem, 3vw, 3rem);
-    z-index: 3;
-  }
-  
-  .magsafe-hero__indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    border: 1px solid var(--surface-line);
-    border-radius: 999px;
-    background: var(--surface);
-    backdrop-filter: blur(18px);
-    color: rgba(22, 20, 18, 0.78);
-    font-size: 0.83rem;
-    letter-spacing: -0.02em;
-    padding: 0.8rem 1rem;
-    box-shadow: 0 18px 40px rgba(104, 98, 87, 0.1);
-  }
-  
-  .magsafe-hero__indicator::before {
-    content: "";
-    height: 0.5rem;
-    width: 0.5rem;
-    border-radius: 999px;
-    background: rgba(118, 112, 102, 0.4);
-    box-shadow: 0 0 0 0.3rem rgba(129, 247, 67, 0.04);
-    transition:
-      background-color 180ms ease,
-      box-shadow 220ms ease;
-  }
-  
-  .magsafe-hero__indicator[data-state="snapping"]::before,
-  .magsafe-hero__indicator[data-state="docked"]::before {
-    background: var(--accent);
-    box-shadow: 0 0 0 0.36rem rgba(129, 247, 67, 0.18);
-  }
-  
-  @keyframes magsafe-port-arrow {
-  
-    0%,
-    100% {
-      opacity: 0.38;
-      transform: translate(-0.45rem, -50%);
-    }
-  
-    50% {
-      opacity: 1;
-      transform: translate(0, -50%);
-    }
-  }
-  
-  @media (max-width: 900px) {
-    .magsafe-device {
-      right: -22vw;
-      top: 24vh;
-      width: min(68vw, 32rem);
-    }
-  
-    .magsafe-hero__copy {
-      max-width: 16rem;
-    }
-  
-    .magsafe-hero__headline {
-      max-width: 13rem;
-    }
-  }
-  
-  @media (max-width: 640px) {
-    .magsafe-hero__copy {
-      left: 1rem;
-      right: 1rem;
-      top: 1rem;
-    }
-  
-    .magsafe-hero__headline {
-      font-size: 0.95rem;
-    }
-  
-    .magsafe-device {
-      right: -40vw;
-      top: 28vh;
-      width: min(84vw, 28rem);
-      min-width: 16rem;
-    }
-  
-    .magsafe-hero__hud {
-      bottom: 1rem;
-      left: 1rem;
-    }
-  }
-  
-  @media (prefers-reduced-motion: reduce) {
-  
-    .magsafe-connector,
-    .magsafe-connector__led,
-    .magsafe-hero__indicator::before {
-      transition-duration: 80ms;
-    }
+}
 
-    .magsafe-port-guide__arrow {
-      animation: none;
-      opacity: 0.82;
-      transform: translateY(-50%);
-    }
-    }
+.magsafe-page {
+  flex: 1;
+  min-height: 100vh;
+}
+
+.magsafe-hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.18)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(247, 243, 236, 0.24));
+  isolation: isolate;
+}
+
+.magsafe-hero__ambient {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(48px);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.magsafe-hero__ambient--left {
+  left: -12rem;
+  top: -8rem;
+  height: 20rem;
+  width: 24rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.magsafe-hero__ambient--right {
+  right: 8rem;
+  top: 8rem;
+  height: 16rem;
+  width: 16rem;
+  background: rgba(216, 221, 232, 0.48);
+}
+
+.magsafe-hero__copy {
+  pointer-events: none;
+  position: absolute;
+  left: clamp(1.25rem, 3vw, 3rem);
+  top: clamp(1.25rem, 3vw, 2.75rem);
+  z-index: 3;
+  max-width: 24rem;
+}
+
+.magsafe-hero__eyebrow {
+  margin: 0 0 0.4rem;
+  color: rgba(26, 23, 18, 0.5);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.magsafe-hero__headline {
+  margin: 0;
+  max-width: 17rem;
+  color: rgba(22, 20, 18, 0.82);
+  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  letter-spacing: -0.03em;
+}
+
+.magsafe-cable-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.magsafe-cable-layer canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.magsafe-device {
+  position: absolute;
+  right: -12vw;
+  top: 19vh;
+  bottom: -7vh;
+  width: min(52vw, 46rem);
+  min-width: 22rem;
+  border-top-left-radius: clamp(2.5rem, 4vw, 4rem);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 20%),
+    linear-gradient(180deg, var(--device) 0%, #cfd0d3 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    -24px 0 60px var(--device-shadow);
+  z-index: 2;
+}
+
+.magsafe-device__sheen {
+  position: absolute;
+  inset: 0;
+  border-top-left-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 16%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 14%);
+  pointer-events: none;
+}
+
+.magsafe-port-guide {
+  position: absolute;
+  left: 0;
+  transform: translateY(-20%);
+  height: 2.8rem;
+  width: 4.9rem;
+  pointer-events: none;
+}
+
+.magsafe-port-guide__edge,
+.magsafe-port-guide__arrow {
+  position: absolute;
+  display: block;
+}
+
+.magsafe-port-guide__edge {
+  left: 0;
+  top: 50%;
+  height: 80px;
+  width: 3px;
+  border-radius: 4px 0 0 4px;
+  transform: translate(-100%, -50%);
+  background: rgba(114, 122, 135, 0.82);
+  opacity: 1;
+}
+
+.magsafe-port-guide__arrow {
+  left: -3.35rem;
+  top: 50%;
+  height: 1rem;
+  width: 2.5rem;
+  transform: translateY(-50%);
+  animation: magsafe-port-arrow 5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.magsafe-port-guide__arrow::before,
+.magsafe-port-guide__arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  display: block;
+}
+
+.magsafe-port-guide__arrow::before {
+  left: 0;
+  height: 0.14rem;
+  width: 1.72rem;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(144, 154, 169, 0), rgba(124, 134, 149, 0.88));
+  box-shadow: 0 0 0.9rem rgba(133, 144, 160, 0.18);
+}
+
+.magsafe-port-guide__arrow::after {
+  right: 0.08rem;
+  height: 0.62rem;
+  width: 0.62rem;
+  border-top: 0.14rem solid rgba(110, 120, 136, 0.92);
+  border-right: 0.14rem solid rgba(110, 120, 136, 0.92);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.magsafe-connector-anchor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.magsafe-connector {
+  position: relative;
+  height: 96px;
+  width: 68px;
+  will-change: transform;
+  filter: drop-shadow(0 14px 18px rgba(93, 88, 80, 0.12));
+}
+
+.magsafe-connector__head,
+.magsafe-connector__shell,
+.magsafe-connector__led {
+  position: absolute;
+  display: block;
+}
+
+.magsafe-connector__head {
+  left: 0;
+  top: 0;
+  height: 96px;
+  width: 64px;
+}
+
+.magsafe-connector__shell {
+  inset: 0;
+  border-radius: 2px;
+  background: linear-gradient(0deg, var(--metal-edge) 0%, var(--metal-light) 22%, var(--metal-mid) 68%, var(--metal-dark) 100%);
+}
+
+.magsafe-connector__shell::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 5px;
+  bottom: 5px;
+  width: 4px;
+  border-radius: 0 1px 1px 0;
+  background: linear-gradient(180deg, rgba(173, 173, 173, 0.88), rgba(120, 120, 120, 0.96));
+}
+
+.magsafe-connector__led {
+  left: 29px;
+  top: 45px;
+  height: 6px;
+  width: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.34),
+    0 0 10px rgba(129, 247, 67, 0.45);
+  transition:
+    opacity 180ms ease,
+    box-shadow 220ms ease;
+}
+
+.magsafe-connector[data-state="docked"] .magsafe-connector__led,
+.magsafe-connector[data-state="snapping"] .magsafe-connector__led {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.36),
+    0 0 15px rgba(129, 247, 67, 0.62);
+}
+
+.magsafe-hero__hud {
+  pointer-events: none;
+  position: absolute;
+  bottom: clamp(1.25rem, 3vw, 2.5rem);
+  left: clamp(1.25rem, 3vw, 3rem);
+  z-index: 3;
+}
+
+.magsafe-hero__indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid var(--surface-line);
+  border-radius: 999px;
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  color: rgba(22, 20, 18, 0.78);
+  font-size: 0.83rem;
+  letter-spacing: -0.02em;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 18px 40px rgba(104, 98, 87, 0.1);
+}
+
+.magsafe-hero__indicator::before {
+  content: "";
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 999px;
+  background: rgba(118, 112, 102, 0.4);
+  box-shadow: 0 0 0 0.3rem rgba(129, 247, 67, 0.04);
+  transition:
+    background-color 180ms ease,
+    box-shadow 220ms ease;
+}
+
+.magsafe-hero__indicator[data-state="snapping"]::before,
+.magsafe-hero__indicator[data-state="docked"]::before {
+  background: var(--accent);
+  box-shadow: 0 0 0 0.36rem rgba(129, 247, 67, 0.18);
+}
+
+@keyframes magsafe-port-arrow {
+  0%,
+  50%,
+  100% {
+    opacity: 0.38;
+    transform: translate(-0.45rem, -50%);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+
+@media (max-width: 900px) {
+  .magsafe-device {
+    right: -22vw;
+    top: 24vh;
+    width: min(68vw, 32rem);
+  }
+
+  .magsafe-hero__copy {
+    max-width: 16rem;
+  }
+
+  .magsafe-hero__headline {
+    max-width: 13rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .magsafe-hero__copy {
+    left: 1rem;
+    right: 1rem;
+    top: 1rem;
+  }
+
+  .magsafe-hero__headline {
+    font-size: 0.95rem;
+  }
+
+  .magsafe-device {
+    right: -40vw;
+    top: 28vh;
+    width: min(84vw, 28rem);
+    min-width: 16rem;
+  }
+
+  .magsafe-hero__hud {
+    bottom: 1rem;
+    left: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magsafe-connector,
+  .magsafe-connector__led,
+  .magsafe-hero__indicator::before {
+    transition-duration: 80ms;
+  }
+
+  .magsafe-port-guide__arrow {
+    animation: none;
+    opacity: 0.82;
+    transform: translateY(-50%);
+  }
+}
