@@ -35,8 +35,16 @@ body {
 
 body {
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.88), transparent 36%),
-    radial-gradient(circle at 82% 28%, rgba(229, 232, 239, 0.74), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.88),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 82% 28%,
+      rgba(229, 232, 239, 0.74),
+      transparent 28%
+    ),
     linear-gradient(180deg, #fbfaf8 0%, var(--background) 58%, #ece8df 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
@@ -52,8 +60,16 @@ body {
   min-height: 100vh;
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.18)),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(247, 243, 236, 0.24));
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.68),
+      rgba(255, 255, 255, 0.18)
+    ),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.64),
+      rgba(247, 243, 236, 0.24)
+    );
   isolation: isolate;
 }
 
@@ -86,7 +102,7 @@ body {
   position: absolute;
   left: clamp(1.25rem, 3vw, 3rem);
   top: clamp(1.25rem, 3vw, 2.75rem);
-  z-index: 3;
+  z-index: 6;
   max-width: 24rem;
 }
 
@@ -110,7 +126,7 @@ body {
 .magsafe-cable-layer {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 4;
   pointer-events: none;
   overflow: hidden;
 }
@@ -143,6 +159,7 @@ body {
 .magsafe-device__sheen {
   position: absolute;
   inset: 0;
+  z-index: 2;
   border-top-left-radius: inherit;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 16%),
@@ -153,10 +170,29 @@ body {
 .magsafe-port-guide {
   position: absolute;
   left: 0;
+  z-index: 0;
   transform: translateY(-20%);
   height: 2.8rem;
   width: 4.9rem;
   pointer-events: none;
+}
+
+.magsafe-port-mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  height: 220px;
+  width: 220px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: #ffffff;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 80%,
+    rgba(255, 255, 255, 1) 100%
+  );
 }
 
 .magsafe-port-guide__edge,
@@ -199,7 +235,11 @@ body {
   width: 1.72rem;
   border-radius: 999px;
   transform: translateY(-50%);
-  background: linear-gradient(90deg, rgba(144, 154, 169, 0), rgba(124, 134, 149, 0.88));
+  background: linear-gradient(
+    90deg,
+    rgba(144, 154, 169, 0),
+    rgba(124, 134, 149, 0.88)
+  );
   box-shadow: 0 0 0.9rem rgba(133, 144, 160, 0.18);
 }
 
@@ -216,7 +256,7 @@ body {
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 4;
+  z-index: 5;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -247,7 +287,13 @@ body {
 .magsafe-connector__shell {
   inset: 0;
   border-radius: 2px;
-  background: linear-gradient(0deg, var(--metal-edge) 0%, var(--metal-light) 22%, var(--metal-mid) 68%, var(--metal-dark) 100%);
+  background: linear-gradient(
+    0deg,
+    var(--metal-edge) 0%,
+    var(--metal-light) 22%,
+    var(--metal-mid) 68%,
+    var(--metal-dark) 100%
+  );
 }
 
 .magsafe-connector__shell::after {
@@ -258,7 +304,11 @@ body {
   bottom: 5px;
   width: 4px;
   border-radius: 0 1px 1px 0;
-  background: linear-gradient(180deg, rgba(173, 173, 173, 0.88), rgba(120, 120, 120, 0.96));
+  background: linear-gradient(
+    180deg,
+    rgba(173, 173, 173, 0.88),
+    rgba(120, 120, 120, 0.96)
+  );
 }
 
 .magsafe-connector__led {
@@ -288,7 +338,7 @@ body {
   position: absolute;
   bottom: clamp(1.25rem, 3vw, 2.5rem);
   left: clamp(1.25rem, 3vw, 3rem);
-  z-index: 3;
+  z-index: 6;
 }
 
 .magsafe-hero__indicator {

@@ -1,6 +1,12 @@
 'use client';
 
-import { animate, motion, useMotionValue, useReducedMotion } from "motion/react";
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "motion/react";
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react";
 
 type DragState = "idle" | "lifted" | "dragging" | "snapping" | "docked";
@@ -149,6 +155,7 @@ const CONNECTOR_SIZE = {
   width: 68,
   height: 96,
 };
+const PORT_MASK_RADIUS = 400;
 
 const FRONT_OFFSET = {
   x: CONNECTOR_SIZE.width,
@@ -321,6 +328,13 @@ export default function MagSafeHero() {
   const lift = useMotionValue(0);
   const scale = useMotionValue(1);
   const tilt = useMotionValue(0);
+  const portMaskSize = PORT_MASK_RADIUS * 2;
+  const portMaskX = useTransform(
+    () => left.get() + FRONT_OFFSET.x - PORT_MASK_RADIUS,
+  );
+  const portMaskY = useTransform(
+    () => top.get() + FRONT_OFFSET.y - PORT_MASK_RADIUS,
+  );
 
   function syncDragState(nextState: DragState) {
     dragStateRef.current = nextState;
@@ -831,6 +845,22 @@ export default function MagSafeHero() {
         </div>
         <div className="magsafe-device__sheen" />
       </div>
+
+      <motion.div
+        className="magsafe-port-mask"
+        aria-hidden="true"
+        style={{
+          x: portMaskX,
+          y: portMaskY,
+          width: portMaskSize,
+          height: portMaskSize,
+          filter: "blur(10px)",
+          background:
+            "radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0) 80%, rgba(255, 255, 255, 0) 100%)",
+          // background:
+          //   "radial-gradient(circle, rgba(255, 255, 0, 1) 0%, rgba(255, 255, 0, 1) 80%, rgba(255, 255, 0, 0) 100%)",
+        }}
+      />
 
       <motion.div
         className="magsafe-connector-anchor"
