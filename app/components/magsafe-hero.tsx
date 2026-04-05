@@ -10,6 +10,7 @@ import {
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react";
 
 type DragState = "idle" | "lifted" | "dragging" | "snapping" | "docked";
+type LedState = "off" | "charging" | "charged";
 
 type ConnectorPose = {
   left: number;
@@ -182,6 +183,29 @@ const DETACH_RESISTANCE = 0.62;
 const RIGID_TAIL = 0;
 const HIDDEN_TAIL_GUIDE = 14;
 const RETURN_TO_HOME_DELAY_MS = 4000;
+const CHARGE_START_DELAY_MS = 400;
+const CHARGE_COMPLETE_DELAY_MS = 8000;
+
+const LED_STYLE_BY_STATE: Record<
+  LedState,
+  { background: string; boxShadow: string }
+> = {
+  off: {
+    background: "#ddd8cf",
+    boxShadow:
+      "0 0 0 0 rgba(255, 255, 255, 0.34), 0 0 8px rgba(221, 216, 207, 0.32)",
+  },
+  charging: {
+    background: "#f59d37",
+    boxShadow:
+      "0 0 0 0 rgba(255, 255, 255, 0.36), 0 0 15px rgba(245, 157, 55, 0.62)",
+  },
+  charged: {
+    background: "#81f743",
+    boxShadow:
+      "0 0 0 0 rgba(255, 255, 255, 0.36), 0 0 15px rgba(129, 247, 67, 0.62)",
+  },
+};
 
 /* ─────────────────────────────────────────────────────────
  * CONNECTOR MOTION STORYBOARD
@@ -327,7 +351,10 @@ export default function MagSafeHero() {
   });
   const positionAnimationsRef = useRef<MotionControl[]>([]);
   const returnHomeTimeoutRef = useRef<number | null>(null);
+  const chargeStartTimeoutRef = useRef<number | null>(null);
+  const chargeCompleteTimeoutRef = useRef<number | null>(null);
   const [dragState, setDragState] = useState<DragState>("idle");
+  const [ledState, setLedState] = useState<LedState>("off");
   const [sceneReady, setSceneReady] = useState(false);
   const [portGuidePosition, setPortGuidePosition] = useState<ScenePoint>({
     left: 0,
@@ -362,6 +389,20 @@ export default function MagSafeHero() {
     if (returnHomeTimeoutRef.current !== null) {
       window.clearTimeout(returnHomeTimeoutRef.current);
       returnHomeTimeoutRef.current = null;
+    }
+  }
+
+  function clearChargeCompleteTimeout() {
+    if (chargeCompleteTimeoutRef.current !== null) {
+      window.clearTimeout(chargeCompleteTimeoutRef.current);
+      chargeCompleteTimeoutRef.current = null;
+    }
+  }
+
+  function clearChargeStartTimeout() {
+    if (chargeStartTimeoutRef.current !== null) {
+      window.clearTimeout(chargeStartTimeoutRef.current);
+      chargeStartTimeoutRef.current = null;
     }
   }
 
@@ -547,6 +588,46 @@ export default function MagSafeHero() {
   useEffect(() => {
     return () => {
       clearReturnHomeTimeout();
+    };
+  }, []);
+
+  useEffect(() => {
+    clearChargeStartTimeout();
+    clearChargeCompleteTimeout();
+
+    if (dragState !== "docked") {
+      setLedState("off");
+      return;
+    }
+
+    setLedState("off");
+    chargeStartTimeoutRef.current = window.setTimeout(() => {
+      if (dragStateRef.current !== "docked") {
+        chargeStartTimeoutRef.current = null;
+        return;
+      }
+
+      setLedState("charging");
+      chargeStartTimeoutRef.current = null;
+      chargeCompleteTimeoutRef.current = window.setTimeout(() => {
+        if (dragStateRef.current === "docked") {
+          setLedState("charged");
+        }
+
+        chargeCompleteTimeoutRef.current = null;
+      }, CHARGE_COMPLETE_DELAY_MS);
+    }, CHARGE_START_DELAY_MS);
+
+    return () => {
+      clearChargeStartTimeout();
+      clearChargeCompleteTimeout();
+    };
+  }, [dragState]);
+
+  useEffect(() => {
+    return () => {
+      clearChargeStartTimeout();
+      clearChargeCompleteTimeout();
     };
   }, []);
 
@@ -998,6 +1079,7 @@ export default function MagSafeHero() {
         <motion.div
           className="magsafe-connector"
           data-state={dragState}
+          data-led-state={ledState}
           style={{
             y: lift,
             scale,
@@ -1006,7 +1088,10 @@ export default function MagSafeHero() {
         >
           <span className="magsafe-connector__head">
             <span className="magsafe-connector__shell" />
-            <span className="magsafe-connector__led" />
+            <span
+              className="magsafe-connector__led"
+              style={LED_STYLE_BY_STATE[ledState]}
+            />
           </span>
         </motion.div>
       </motion.div>

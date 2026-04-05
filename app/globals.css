@@ -314,25 +314,15 @@ body {
 }
 
 .magsafe-connector__led {
-  left: 29px;
-  top: 45px;
-  height: 6px;
-  width: 6px;
+  left: 28px;
+  top: 44px;
+  height: 8px;
+  width: 8px;
   border-radius: 999px;
-  background: var(--accent);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.34),
-    0 0 10px rgba(129, 247, 67, 0.45);
   transition:
+    background-color 180ms ease,
     opacity 180ms ease,
     box-shadow 220ms ease;
-}
-
-.magsafe-connector[data-state="docked"] .magsafe-connector__led,
-.magsafe-connector[data-state="snapping"] .magsafe-connector__led {
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.36),
-    0 0 15px rgba(129, 247, 67, 0.62);
 }
 
 .magsafe-hero__hud {
