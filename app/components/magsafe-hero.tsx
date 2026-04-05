@@ -434,7 +434,7 @@ export default function MagSafeHero() {
             const edgeRect = portEdge.getBoundingClientRect();
 
             return {
-              x: edgeRect.left - rect.left + edgeRect.width / 2,
+              x: edgeRect.right - rect.left + 4,
               y: edgeRect.top - rect.top + edgeRect.height / 2,
               magneticRadius: clamp(nextSize.width * 0.12, 88, 150),
               dockThreshold: 16,
@@ -855,7 +855,7 @@ export default function MagSafeHero() {
           style={{
             y: lift,
             scale,
-            rotate: tilt,
+            rotate: dragState === "docked" ? 0 : tilt,
           }}
         >
           <span className="magsafe-connector__head">
