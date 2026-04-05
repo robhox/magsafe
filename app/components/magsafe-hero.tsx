@@ -183,7 +183,7 @@ const DETACH_RESISTANCE = 0.62;
 const RIGID_TAIL = 0;
 const HIDDEN_TAIL_GUIDE = 14;
 const RETURN_TO_HOME_DELAY_MS = 4000;
-const CHARGE_START_DELAY_MS = 400;
+const CHARGE_START_DELAY_MS = 800;
 const CHARGE_COMPLETE_DELAY_MS = 8000;
 
 const LED_STYLE_BY_STATE: Record<
@@ -329,6 +329,10 @@ export default function MagSafeHero() {
   const cableMountRef = useRef<HTMLDivElement>(null);
   const deviceRef = useRef<HTMLDivElement>(null);
   const portEdgeRef = useRef<HTMLSpanElement>(null);
+  const snapAudioRef = useRef<HTMLAudioElement | null>(null);
+  const chargingAudioRef = useRef<HTMLAudioElement | null>(null);
+  const previousDragStateRef = useRef<DragState>("idle");
+  const previousLedStateRef = useRef<LedState>("off");
   const sizeRef = useRef<SceneSize>({ width: 0, height: 0 });
   const snapTargetRef = useRef<SnapTarget>({
     x: 0,
@@ -404,6 +408,19 @@ export default function MagSafeHero() {
       window.clearTimeout(chargeStartTimeoutRef.current);
       chargeStartTimeoutRef.current = null;
     }
+  }
+
+  function playAudio(audio: HTMLAudioElement | null) {
+    if (!audio) {
+      return;
+    }
+
+    audio.pause();
+    audio.currentTime = 0;
+
+    void audio.play().catch(() => {
+      // Ignore autoplay failures until the user has interacted with the page.
+    });
   }
 
   function scheduleReturnHome() {
@@ -592,6 +609,32 @@ export default function MagSafeHero() {
   }, []);
 
   useEffect(() => {
+    const snapAudio = new Audio("/snap.mp3");
+    const chargingAudio = new Audio("/charging-sound.mp3");
+
+    snapAudio.preload = "auto";
+    chargingAudio.preload = "auto";
+
+    snapAudioRef.current = snapAudio;
+    chargingAudioRef.current = chargingAudio;
+
+    return () => {
+      snapAudio.pause();
+      chargingAudio.pause();
+      snapAudioRef.current = null;
+      chargingAudioRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (dragState === "docked" && previousDragStateRef.current !== "docked") {
+      playAudio(snapAudioRef.current);
+    }
+
+    previousDragStateRef.current = dragState;
+  }, [dragState]);
+
+  useEffect(() => {
     clearChargeStartTimeout();
     clearChargeCompleteTimeout();
 
@@ -630,6 +673,14 @@ export default function MagSafeHero() {
       clearChargeCompleteTimeout();
     };
   }, []);
+
+  useEffect(() => {
+    if (ledState === "charging" && previousLedStateRef.current !== "charging") {
+      playAudio(chargingAudioRef.current);
+    }
+
+    previousLedStateRef.current = ledState;
+  }, [ledState]);
 
   useEffect(() => {
     const mount = cableMountRef.current;
