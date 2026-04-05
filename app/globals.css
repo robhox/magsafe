@@ -288,11 +288,11 @@ body {
   inset: 0;
   border-radius: 2px;
   background: linear-gradient(
-    0deg,
-    var(--metal-edge) 0%,
-    var(--metal-light) 22%,
-    var(--metal-mid) 68%,
-    var(--metal-dark) 100%
+    to bottom,
+    #bfbfbf 0%,
+    #d9d9d9 6%,
+    #a6a6a6 97%,
+    #737373 100%
   );
 }
 
@@ -305,9 +305,11 @@ body {
   width: 4px;
   border-radius: 0 1px 1px 0;
   background: linear-gradient(
-    180deg,
-    rgba(173, 173, 173, 0.88),
-    rgba(120, 120, 120, 0.96)
+    to bottom,
+    #7b7b7b 0%,
+    #bfbfbf 7%,
+    #6d6d6d 89%,
+    #898989 100%
   );
 }
 

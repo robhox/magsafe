@@ -181,6 +181,7 @@ const DETACH_DISTANCE = 18;
 const DETACH_RESISTANCE = 0.62;
 const RIGID_TAIL = 0;
 const HIDDEN_TAIL_GUIDE = 14;
+const RETURN_TO_HOME_DELAY_MS = 4000;
 
 /* ─────────────────────────────────────────────────────────
  * CONNECTOR MOTION STORYBOARD
@@ -325,6 +326,7 @@ export default function MagSafeHero() {
     detached: false,
   });
   const positionAnimationsRef = useRef<MotionControl[]>([]);
+  const returnHomeTimeoutRef = useRef<number | null>(null);
   const [dragState, setDragState] = useState<DragState>("idle");
   const [sceneReady, setSceneReady] = useState(false);
   const [portGuidePosition, setPortGuidePosition] = useState<ScenePoint>({
@@ -354,6 +356,27 @@ export default function MagSafeHero() {
   function stopPositionAnimations() {
     positionAnimationsRef.current.forEach((control) => control.stop());
     positionAnimationsRef.current = [];
+  }
+
+  function clearReturnHomeTimeout() {
+    if (returnHomeTimeoutRef.current !== null) {
+      window.clearTimeout(returnHomeTimeoutRef.current);
+      returnHomeTimeoutRef.current = null;
+    }
+  }
+
+  function scheduleReturnHome() {
+    clearReturnHomeTimeout();
+    returnHomeTimeoutRef.current = window.setTimeout(() => {
+      if (pointerSessionRef.current.id !== null) {
+        return;
+      }
+
+      syncDragState("idle");
+      animateConnectorPosition(computeHomePose(sizeRef.current), "return");
+      settleConnector("idle");
+      returnHomeTimeoutRef.current = null;
+    }, RETURN_TO_HOME_DELAY_MS);
   }
 
   function animateConnectorPosition(
@@ -522,6 +545,12 @@ export default function MagSafeHero() {
   }, [left, top]);
 
   useEffect(() => {
+    return () => {
+      clearReturnHomeTimeout();
+    };
+  }, []);
+
+  useEffect(() => {
     const mount = cableMountRef.current;
 
     if (!mount) {
@@ -567,7 +596,7 @@ export default function MagSafeHero() {
       const camera = new THREE.OrthographicCamera(0, 1, 1, 0, -100, 100);
       camera.position.z = 20;
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.7);
       const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
       directionalLight.position.set(-120, 180, 120);
       scene.add(ambientLight, directionalLight);
@@ -721,6 +750,7 @@ export default function MagSafeHero() {
     }
 
     event.preventDefault();
+    clearReturnHomeTimeout();
     stopPositionAnimations();
 
     const sceneBounds = sceneRef.current.getBoundingClientRect();
@@ -808,6 +838,60 @@ export default function MagSafeHero() {
       return;
     }
 
+    const pointerSession = pointerSessionRef.current;
+    const sceneBounds = sceneRef.current?.getBoundingClientRect();
+    const pointerX = sceneBounds ? event.clientX - sceneBounds.left : null;
+    const pointerY = sceneBounds ? event.clientY - sceneBounds.top : null;
+
+    const deltaX =
+      pointerX === null ? 0 : pointerX - pointerSession.startPointerX;
+    const deltaY =
+      pointerY === null ? 0 : pointerY - pointerSession.startPointerY;
+    const travel = Math.hypot(deltaX, deltaY);
+
+    let releaseState = dragStateRef.current;
+    let releasePose: ConnectorPose = clampPose(
+      {
+        left: left.get(),
+        top: top.get(),
+      },
+      sizeRef.current,
+    );
+
+    if (
+      sceneBounds &&
+      pointerX !== null &&
+      pointerY !== null &&
+      pointerSession.wasDocked &&
+      !pointerSession.detached &&
+      travel < DETACH_DISTANCE
+    ) {
+      releaseState = "docked";
+      releasePose = clampPose(
+        computeDockPose(snapTargetRef.current),
+        sizeRef.current,
+      );
+    } else if (sceneBounds && pointerX !== null && pointerY !== null) {
+      const freePose = clampPose(
+        pointerSession.wasDocked
+          ? {
+              left: pointerSession.startLeft + deltaX * DETACH_RESISTANCE,
+              top: pointerSession.startTop + deltaY * DETACH_RESISTANCE,
+            }
+          : {
+              left: pointerX - pointerSession.offsetX,
+              top: pointerY - pointerSession.offsetY,
+            },
+        sizeRef.current,
+      );
+
+      const magneticResult = applyMagnet(freePose);
+      releasePose = magneticResult.pose;
+      releaseState = magneticResult.state;
+      left.set(releasePose.left);
+      top.set(releasePose.top);
+    }
+
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -824,16 +908,19 @@ export default function MagSafeHero() {
       detached: false,
     };
 
-    if (dragStateRef.current === "docked" || dragStateRef.current === "snapping") {
-      animateConnectorPosition(clampPose(computeDockPose(snapTargetRef.current), sizeRef.current));
+    if (releaseState === "docked" || releaseState === "snapping") {
+      clearReturnHomeTimeout();
+      animateConnectorPosition(
+        clampPose(computeDockPose(snapTargetRef.current), sizeRef.current),
+      );
       syncDragState("docked");
       settleConnector("docked");
       return;
     }
 
     syncDragState("idle");
-    animateConnectorPosition(computeHomePose(sizeRef.current), "return");
     settleConnector("idle");
+    scheduleReturnHome();
   }
 
   function handlePointerCancel(event: ReactPointerEvent<HTMLDivElement>) {
