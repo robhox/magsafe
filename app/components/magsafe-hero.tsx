@@ -28,6 +28,11 @@ type SceneSize = {
   height: number;
 };
 
+type ScenePoint = {
+  left: number;
+  top: number;
+};
+
 type PointerSession = {
   id: number | null;
   offsetX: number;
@@ -297,6 +302,7 @@ function clampPose(pose: ConnectorPose, size: SceneSize): ConnectorPose {
 export default function MagSafeHero() {
   const sceneRef = useRef<HTMLDivElement>(null);
   const cableMountRef = useRef<HTMLDivElement>(null);
+  const deviceRef = useRef<HTMLDivElement>(null);
   const portEdgeRef = useRef<HTMLSpanElement>(null);
   const sizeRef = useRef<SceneSize>({ width: 0, height: 0 });
   const snapTargetRef = useRef<SnapTarget>({
@@ -321,6 +327,10 @@ export default function MagSafeHero() {
   const positionAnimationsRef = useRef<MotionControl[]>([]);
   const [dragState, setDragState] = useState<DragState>("idle");
   const [sceneReady, setSceneReady] = useState(false);
+  const [portGuidePosition, setPortGuidePosition] = useState<ScenePoint>({
+    left: 0,
+    top: 0,
+  });
   const reducedMotion = useReducedMotion();
 
   const left = useMotionValue(0);
@@ -442,6 +452,22 @@ export default function MagSafeHero() {
       };
 
       sizeRef.current = nextSize;
+      const device = deviceRef.current;
+      if (device) {
+        const deviceRect = device.getBoundingClientRect();
+        const nextPortGuidePosition = {
+          left: deviceRect.left - rect.left,
+          top: deviceRect.top - rect.top + deviceRect.height * 0.25,
+        };
+
+        setPortGuidePosition((current) =>
+          current.left === nextPortGuidePosition.left &&
+          current.top === nextPortGuidePosition.top
+            ? current
+            : nextPortGuidePosition,
+        );
+      }
+
       const portEdge = portEdgeRef.current;
       const nextSnapTarget = portEdge
         ? (() => {
@@ -832,17 +858,20 @@ export default function MagSafeHero() {
         aria-hidden="true"
       />
 
-      <div className="magsafe-device" aria-hidden="true">
-        <div
-          className="magsafe-port-guide"
-          style={{
-            top: "25%",
-            opacity: sceneReady ? 1 : 0,
-          }}
-        >
-          <span ref={portEdgeRef} className="magsafe-port-guide__edge" />
-          <span className="magsafe-port-guide__arrow" />
-        </div>
+      <div
+        className="magsafe-port-guide"
+        aria-hidden="true"
+        style={{
+          left: portGuidePosition.left,
+          top: portGuidePosition.top,
+          opacity: sceneReady ? 1 : 0,
+        }}
+      >
+        <span ref={portEdgeRef} className="magsafe-port-guide__edge" />
+        <span className="magsafe-port-guide__arrow" />
+      </div>
+
+      <div ref={deviceRef} className="magsafe-device" aria-hidden="true">
         <div className="magsafe-device__sheen" />
       </div>
 
