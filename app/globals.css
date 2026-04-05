@@ -3,29 +3,8 @@
 :root {
   --background: #f4f1ea;
   --foreground: #161412;
-  --surface: rgba(255, 255, 255, 0.74);
-  --surface-line: rgba(132, 122, 106, 0.14);
   --device: #d1d2d4;
-  --device-edge: #c1c4c8;
   --device-shadow: rgba(121, 127, 138, 0.18);
-  --metal-light: #dedede;
-  --metal-mid: #b9b9b9;
-  --metal-dark: #8e8e8e;
-  --metal-edge: #f3f2f0;
-  --tail-light: #fefdfb;
-  --tail-mid: #e8e3da;
-  --tail-shadow: rgba(118, 107, 89, 0.12);
-  --cable-shadow: rgba(119, 112, 101, 0.16);
-  --cable-line: rgba(194, 198, 205, 0.34);
-  --pin: #b38a3a;
-  --accent: #81f743;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 html,
@@ -182,17 +161,8 @@ body {
   left: 0;
   top: 0;
   z-index: 3;
-  height: 220px;
-  width: 220px;
   border-radius: 999px;
   pointer-events: none;
-  background: #ffffff;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 1) 80%,
-    rgba(255, 255, 255, 1) 100%
-  );
 }
 
 .magsafe-port-guide__edge,
@@ -327,47 +297,6 @@ body {
     box-shadow 220ms ease;
 }
 
-.magsafe-hero__hud {
-  pointer-events: none;
-  position: absolute;
-  bottom: clamp(1.25rem, 3vw, 2.5rem);
-  left: clamp(1.25rem, 3vw, 3rem);
-  z-index: 6;
-}
-
-.magsafe-hero__indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  border: 1px solid var(--surface-line);
-  border-radius: 999px;
-  background: var(--surface);
-  backdrop-filter: blur(18px);
-  color: rgba(22, 20, 18, 0.78);
-  font-size: 0.83rem;
-  letter-spacing: -0.02em;
-  padding: 0.8rem 1rem;
-  box-shadow: 0 18px 40px rgba(104, 98, 87, 0.1);
-}
-
-.magsafe-hero__indicator::before {
-  content: "";
-  height: 0.5rem;
-  width: 0.5rem;
-  border-radius: 999px;
-  background: rgba(118, 112, 102, 0.4);
-  box-shadow: 0 0 0 0.3rem rgba(129, 247, 67, 0.04);
-  transition:
-    background-color 180ms ease,
-    box-shadow 220ms ease;
-}
-
-.magsafe-hero__indicator[data-state="snapping"]::before,
-.magsafe-hero__indicator[data-state="docked"]::before {
-  background: var(--accent);
-  box-shadow: 0 0 0 0.36rem rgba(129, 247, 67, 0.18);
-}
-
 @keyframes magsafe-port-arrow {
   0%,
   50%,
@@ -415,17 +344,11 @@ body {
     width: min(84vw, 28rem);
     min-width: 16rem;
   }
-
-  .magsafe-hero__hud {
-    bottom: 1rem;
-    left: 1rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .magsafe-connector,
-  .magsafe-connector__led,
-  .magsafe-hero__indicator::before {
+  .magsafe-connector__led {
     transition-duration: 80ms;
   }
 
