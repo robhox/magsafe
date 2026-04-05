@@ -263,10 +263,12 @@ body {
 }
 
 .magsafe-connector {
+  --connector-overlap: 0px;
   position: relative;
   height: 96px;
   width: 68px;
   will-change: transform;
+  clip-path: inset(0 var(--connector-overlap) 0 0);
   filter: drop-shadow(0 14px 18px rgba(93, 88, 80, 0.12));
 }
 

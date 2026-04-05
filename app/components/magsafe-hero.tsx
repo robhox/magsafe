@@ -185,6 +185,7 @@ const HIDDEN_TAIL_GUIDE = 14;
 const RETURN_TO_HOME_DELAY_MS = 4000;
 const CHARGE_START_DELAY_MS = 800;
 const CHARGE_COMPLETE_DELAY_MS = 8000;
+const PORT_INSERT_DEPTH = 4;
 
 const LED_STYLE_BY_STATE: Record<
   LedState,
@@ -378,6 +379,12 @@ export default function MagSafeHero() {
   const portMaskY = useTransform(
     () => top.get() + FRONT_OFFSET.y - PORT_MASK_RADIUS,
   );
+  const connectorOverlap = useTransform(() => {
+    const portBoundary = snapTargetRef.current.x - PORT_INSERT_DEPTH;
+    const overlap = left.get() + CONNECTOR_SIZE.width - portBoundary;
+
+    return `${clamp(overlap, 0, CONNECTOR_SIZE.width)}px`;
+  });
 
   function syncDragState(nextState: DragState) {
     dragStateRef.current = nextState;
@@ -1132,6 +1139,7 @@ export default function MagSafeHero() {
           data-state={dragState}
           data-led-state={ledState}
           style={{
+            ["--connector-overlap" as const]: connectorOverlap,
             y: lift,
             scale,
             rotate: dragState === "docked" ? 0 : tilt,
