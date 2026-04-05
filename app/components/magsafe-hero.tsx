@@ -38,6 +38,8 @@ type MotionControl = {
   stop: () => void;
 };
 
+type PositionAnimationMode = "dock" | "return";
+
 type RendererLike = {
   domElement: HTMLCanvasElement;
   outputColorSpace: string;
@@ -168,6 +170,26 @@ const DETACH_RESISTANCE = 0.62;
 const RIGID_TAIL = 0;
 const HIDDEN_TAIL_GUIDE = 14;
 
+/* ─────────────────────────────────────────────────────────
+ * CONNECTOR MOTION STORYBOARD
+ *
+ *    0ms   pointer down lifts the connector
+ *   drag   magnet can pull it into the dock
+ * release  if aligned, snap into the port
+ * release  otherwise spring back to the home pose
+ * ───────────────────────────────────────────────────────── */
+
+const POSITION_SPRING = {
+  dock: {
+    reduced: { stiffness: 360, damping: 38 },
+    default: { stiffness: 520, damping: 28 },
+  },
+  return: {
+    reduced: { stiffness: 280, damping: 34 },
+    default: { stiffness: 360, damping: 30 },
+  },
+} as const;
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
@@ -201,7 +223,11 @@ function createBraidedTexture() {
   context.strokeStyle = "rgba(198, 202, 208, 0.34)";
   context.lineWidth = 2;
 
-  for (let index = -canvas.height; index < canvas.width + canvas.height; index += 14) {
+  for (
+    let index = -canvas.height;
+    index < canvas.width + canvas.height;
+    index += 14
+  ) {
     context.beginPath();
     context.moveTo(index, 0);
     context.lineTo(index + canvas.height, canvas.height);
@@ -227,7 +253,7 @@ function createBraidedTexture() {
 function computeSnapTarget(size: SceneSize): SnapTarget {
   return {
     x: size.width - clamp(size.width * 0.14, 116, 190),
-    y: size.height * 0.5,
+    y: size.height * 0.25,
     magneticRadius: clamp(size.width * 0.12, 88, 150),
     dockThreshold: 16,
   };
@@ -247,6 +273,10 @@ function computeStartPose(size: SceneSize): ConnectorPose {
   };
 }
 
+function computeHomePose(size: SceneSize): ConnectorPose {
+  return clampPose(computeStartPose(size), size);
+}
+
 function clampPose(pose: ConnectorPose, size: SceneSize): ConnectorPose {
   const maxLeft = Math.max(20, size.width - CONNECTOR_SIZE.width - 18);
   const maxTop = Math.max(24, size.height - CONNECTOR_SIZE.height - 24);
@@ -260,6 +290,7 @@ function clampPose(pose: ConnectorPose, size: SceneSize): ConnectorPose {
 export default function MagSafeHero() {
   const sceneRef = useRef<HTMLDivElement>(null);
   const cableMountRef = useRef<HTMLDivElement>(null);
+  const portEdgeRef = useRef<HTMLSpanElement>(null);
   const sizeRef = useRef<SceneSize>({ width: 0, height: 0 });
   const snapTargetRef = useRef<SnapTarget>({
     x: 0,
@@ -283,12 +314,6 @@ export default function MagSafeHero() {
   const positionAnimationsRef = useRef<MotionControl[]>([]);
   const [dragState, setDragState] = useState<DragState>("idle");
   const [sceneReady, setSceneReady] = useState(false);
-  const [snapTarget, setSnapTarget] = useState<SnapTarget>({
-    x: 0,
-    y: 0,
-    magneticRadius: 120,
-    dockThreshold: 16,
-  });
   const reducedMotion = useReducedMotion();
 
   const left = useMotionValue(0);
@@ -307,19 +332,23 @@ export default function MagSafeHero() {
     positionAnimationsRef.current = [];
   }
 
-  function animateConnectorPosition(targetPose: ConnectorPose) {
+  function animateConnectorPosition(
+    targetPose: ConnectorPose,
+    mode: PositionAnimationMode = "dock",
+  ) {
     stopPositionAnimations();
+    const spring = reducedMotion
+      ? POSITION_SPRING[mode].reduced
+      : POSITION_SPRING[mode].default;
 
     positionAnimationsRef.current = [
       animate(left, targetPose.left, {
         type: "spring",
-        stiffness: reducedMotion ? 360 : 520,
-        damping: reducedMotion ? 38 : 28,
+        ...spring,
       }),
       animate(top, targetPose.top, {
         type: "spring",
-        stiffness: reducedMotion ? 360 : 520,
-        damping: reducedMotion ? 38 : 28,
+        ...spring,
       }),
     ];
   }
@@ -399,12 +428,23 @@ export default function MagSafeHero() {
       };
 
       sizeRef.current = nextSize;
-      const nextSnapTarget = computeSnapTarget(nextSize);
+      const portEdge = portEdgeRef.current;
+      const nextSnapTarget = portEdge
+        ? (() => {
+            const edgeRect = portEdge.getBoundingClientRect();
+
+            return {
+              x: edgeRect.left - rect.left + edgeRect.width / 2,
+              y: edgeRect.top - rect.top + edgeRect.height / 2,
+              magneticRadius: clamp(nextSize.width * 0.12, 88, 150),
+              dockThreshold: 16,
+            };
+          })()
+        : computeSnapTarget(nextSize);
       snapTargetRef.current = nextSnapTarget;
-      setSnapTarget(nextSnapTarget);
 
       if (!hasPlacedConnectorRef.current) {
-        const startPose = clampPose(computeStartPose(nextSize), nextSize);
+        const startPose = computeHomePose(nextSize);
         left.set(startPose.left);
         top.set(startPose.top);
         hasPlacedConnectorRef.current = true;
@@ -752,6 +792,7 @@ export default function MagSafeHero() {
     }
 
     syncDragState("idle");
+    animateConnectorPosition(computeHomePose(sizeRef.current), "return");
     settleConnector("idle");
   }
 
@@ -766,20 +807,26 @@ export default function MagSafeHero() {
 
       <div className="magsafe-hero__copy">
         <p className="magsafe-hero__eyebrow">MagSafe study</p>
-        <p className="magsafe-hero__headline">Lift. Drag. Let the magnet finish.</p>
+        <p className="magsafe-hero__headline">
+          Lift. Drag. Let the magnet finish.
+        </p>
       </div>
 
-      <div ref={cableMountRef} className="magsafe-cable-layer" aria-hidden="true" />
+      <div
+        ref={cableMountRef}
+        className="magsafe-cable-layer"
+        aria-hidden="true"
+      />
 
       <div className="magsafe-device" aria-hidden="true">
         <div
           className="magsafe-port-guide"
           style={{
-            top: snapTarget.y,
+            top: "25%",
             opacity: sceneReady ? 1 : 0,
           }}
         >
-          <span className="magsafe-port-guide__edge" />
+          <span ref={portEdgeRef} className="magsafe-port-guide__edge" />
           <span className="magsafe-port-guide__arrow" />
         </div>
         <div className="magsafe-device__sheen" />

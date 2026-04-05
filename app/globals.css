@@ -153,7 +153,7 @@ body {
   .magsafe-port-guide {
     position: absolute;
     left: 0;
-    transform: translateY(-50%);
+    transform: translateY(-20%);
     height: 2.8rem;
     width: 4.9rem;
     pointer-events: none;
@@ -168,15 +168,12 @@ body {
   .magsafe-port-guide__edge {
     left: 0;
     top: 50%;
-    height: 1.65rem;
-    width: 0.18rem;
-    border-radius: 999px;
-    transform: translate(-50%, -50%);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(114, 122, 135, 0.82));
-    box-shadow:
-      -0.7rem 0 1rem rgba(255, 255, 255, 0.12),
-      0 0 0 1px rgba(255, 255, 255, 0.18);
-    opacity: 0.9;
+    height: 80px;
+      width: 3px;
+      border-radius: 4px 0px 0px 4px;
+      transform: translate(-100%, -50%);
+      background: rgba(114, 122, 135, 0.82);
+      opacity: 1;
   }
   
   .magsafe-port-guide__arrow {
