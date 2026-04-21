@@ -3,6 +3,8 @@
 import {
   animate,
   motion,
+  type MotionStyle,
+  type MotionValue,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -51,6 +53,12 @@ type MotionControl = {
 };
 
 type PositionAnimationMode = "dock" | "return";
+
+type MotionCSSVariable = string | number | MotionValue<string> | MotionValue<number>;
+
+type MotionStyleWithCSSVariables = MotionStyle & {
+  [key: `--${string}`]: MotionCSSVariable;
+};
 
 type RendererLike = {
   domElement: HTMLCanvasElement;
@@ -385,6 +393,12 @@ export default function MagSafeHero() {
 
     return `${clamp(overlap, 0, CONNECTOR_SIZE.width)}px`;
   });
+  const connectorStyle: MotionStyleWithCSSVariables = {
+    "--connector-overlap": connectorOverlap,
+    y: lift,
+    scale,
+    rotate: dragState === "docked" ? 0 : tilt,
+  };
 
   function syncDragState(nextState: DragState) {
     dragStateRef.current = nextState;
@@ -1138,12 +1152,7 @@ export default function MagSafeHero() {
           className="magsafe-connector"
           data-state={dragState}
           data-led-state={ledState}
-          style={{
-            ["--connector-overlap" as const]: connectorOverlap,
-            y: lift,
-            scale,
-            rotate: dragState === "docked" ? 0 : tilt,
-          }}
+          style={connectorStyle}
         >
           <span className="magsafe-connector__head">
             <span className="magsafe-connector__shell" />
